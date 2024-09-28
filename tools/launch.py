@@ -157,9 +157,15 @@ def parse_args():
 
 
 def main():
+    """该函数是开始整个训练，同样需要判断
+    """
+
+    # 解析命令行参数，有命令如下：
+    # python ./tools/launch.py --nnodes 1 --node_rank 0 --master_addr 127.0.0.1 --master_port 29500 --nproc_per_node 2 ./configs/r50_deformable_detr.sh
     args = parse_args()
 
-    # world size in terms of number of processes
+    # world size in terms of number of processes，计算总进程数 
+    # 这个例子里面，dist_world_size = 2 * 1 = 2
     dist_world_size = args.nproc_per_node * args.nnodes
 
     # set PyTorch distributed related environmental variables
@@ -170,14 +176,17 @@ def main():
 
     processes = []
 
+    # 遍历每个节点，
     for local_rank in range(0, args.nproc_per_node):
-        # each process's rank
+        # each process's rank，给当前进程的标记
         dist_rank = args.nproc_per_node * args.node_rank + local_rank
         current_env["RANK"] = str(dist_rank)
         current_env["LOCAL_RANK"] = str(local_rank)
 
+        # 构建命令行
         cmd = [args.training_script] + args.training_script_args
 
+        # 启动进程，使用准备好的环境变量
         process = subprocess.Popen(cmd, env=current_env)
         processes.append(process)
 

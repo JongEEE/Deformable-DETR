@@ -1,11 +1,3 @@
-# ------------------------------------------------------------------------------------------------
-# Deformable DETR
-# Copyright (c) 2020 SenseTime. All Rights Reserved.
-# Licensed under the Apache License, Version 2.0 [see LICENSE for details]
-# ------------------------------------------------------------------------------------------------
-# Modified from https://github.com/chengdazhi/Deformable-Convolution-V2-PyTorch/tree/pytorch_1.0.0
-# ------------------------------------------------------------------------------------------------
-
 import os
 import glob
 
@@ -15,24 +7,26 @@ from torch.utils.cpp_extension import CUDA_HOME
 from torch.utils.cpp_extension import CppExtension
 from torch.utils.cpp_extension import CUDAExtension
 
-from setuptools import find_packages
-from setuptools import setup
+# 测试 setup 文件中的几个函数
 
-# 依赖管理，需要虚拟环境包括这些内容
-requirements = ["torch", "torchvision"]
-
-
-
-
-def get_extensions():
+def test():
     this_dir = os.path.dirname(os.path.abspath(__file__))
+
+    # print("this_dir", this_dir)
     extensions_dir = os.path.join(this_dir, "src")
+    # print("extensions_dir", extensions_dir)
 
     main_file = glob.glob(os.path.join(extensions_dir, "*.cpp"))
     source_cpu = glob.glob(os.path.join(extensions_dir, "cpu", "*.cpp"))
     source_cuda = glob.glob(os.path.join(extensions_dir, "cuda", "*.cu"))
+    # for file in main_file:
+    #     print("file: ", file)
 
     sources = main_file + source_cpu
+
+    # for src_file in sources:
+    #     print("srcFile:", src_file)
+    
     extension = CppExtension
     extra_compile_args = {"cxx": []}
     define_macros = []
@@ -50,8 +44,12 @@ def get_extensions():
         ]
     else:
         raise NotImplementedError('Cuda is not availabel')
-
+    
+    # print(CUDA_HOME)
+    
     sources = [os.path.join(extensions_dir, s) for s in sources]
+    # for src_file in sources:
+    #     print("srcFile:", src_file)
     include_dirs = [extensions_dir]
     ext_modules = [
         extension(
@@ -62,15 +60,11 @@ def get_extensions():
             extra_compile_args=extra_compile_args,
         )
     ]
+
+    print(ext_modules)
     return ext_modules
 
-setup(
-    name="MultiScaleDeformableAttention",
-    version="1.0",
-    author="Weijie Su",
-    url="https://github.com/fundamentalvision/Deformable-DETR",
-    description="PyTorch Wrapper for CUDA Functions of Multi-Scale Deformable Attention",
-    packages=find_packages(exclude=("configs", "tests",)),
-    ext_modules=get_extensions(),
-    cmdclass={"build_ext": torch.utils.cpp_extension.BuildExtension},
-)
+
+
+if __name__ == "__main__":
+    test()

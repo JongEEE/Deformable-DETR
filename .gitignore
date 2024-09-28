@@ -1,0 +1,7 @@
+/data/
+/exps/
+models/ops/build/
+models/ops/dist/
+models/ops/MultiScaleDeformableAttention.egg-info/
+/pre-trainedModel/
+__pycache__/

@@ -127,6 +127,7 @@ def get_args_parser():
 
 
 def main(args):
+    # 进行节点初始化
     utils.init_distributed_mode(args)
     print("git:\n  {}\n".format(utils.get_sha()))
 
